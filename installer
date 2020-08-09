@@ -1,0 +1,64 @@
+#!/bin/bash
+ 
+####################
+# Notes            #                 
+####################
+#
+# Created  by Ahmed alotibi @
+#
+# This script to make  macOS Beta3 installer 
+#
+####################
+# BootFlag        #
+####################
+# devices.mac.boot_args="-v"
+# devices.mac_hw_model="MacPro7,1"
+# devices.smbios.serial="F5K036207J9K3F71F"
+# devices.smbios.board_id="Mac-27AD2F918AE68F61"
+# csr-active-config="E7030000"
+####################
+####################
+# BootFlag        #
+####################
+# devices.mac.boot_args="-v"
+# devices.mac_hw_model=="iMac19,1"
+# devices.smbios.serial="C02942500GULNV9UE"
+# devices.smbios.board_id="Mac-AA95B1DDAB278B95"
+#
+####################
+# BootFlag        #
+####################
+# devices.mac.boot_args="-x -v"
+# devices.mac_hw_model="iMacPro1,1"
+# devices.smbios.serial="C02734700GUJG361H"
+# devices.smbios.board_id="Mac-7BA5B2D9E42DDD94"
+####################
+# Variables        #
+####################
+ 
+dmgName=$"macOS11BigSurAhmed"
+ 
+####################
+# Script           #
+####################
+ 
+cd ~/Downloads
+ 
+# Create and mount sparse volume:
+hdiutil create -o install_container -size 20G -layout SPUD -fs HFS+J -type SPARSE
+hdiutil attach install_container.sparseimage -noverify -mountpoint /Volumes/install_build
+ 
+# Copy contents of installer .app into mounted volume:
+/Applications/Install\ macOS\ Big\ Sur\ Beta.app/Contents/Resources/createinstallmedia --nointeraction --volume /Volumes/install_build
+ 
+# Detach the completed image:
+hdiutil detach -force /Volumes/Install\ macOS\ Big\ Sur\ Beta
+ 
+# Convert and rename the image:
+hdiutil convert install_container.sparseimage -format UDZO -o $dmgName.dmg
+ 
+# Cleanup
+ 
+rm install_container.sparseimage
+ 
+exit 0
